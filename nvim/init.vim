@@ -1,0 +1,34 @@
+syntax enable
+
+set termguicolors
+set background=dark
+"colorscheme quiet
+colorscheme habamax_nobg
+
+set number
+set relativenumber
+set cursorline
+"set cursorcolumn
+set noswapfile
+set showmatch
+
+set incsearch
+set ignorecase
+set showmode
+set hlsearch
+set wildmenu
+set wildmode=list:longest
+
+set foldmethod=manual
+set foldnestmax=10
+set foldenable
+set foldlevelstart=2
+
+augroup remember_folds
+  autocmd!
+  autocmd BufWinLeave * mkview
+  autocmd BufWinEnter * silent! loadview
+augroup END
+
+
+
