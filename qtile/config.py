@@ -17,13 +17,13 @@ from qtile_extras.widget.decorations import BorderDecoration, RectDecoration, Po
 
 # --- / VARIABLES / ---
 terminal =      "st"; #guess_terminal()
+fn_size =       14; #asdasasdasdasd
 main_col =      mountainfuji["accents"]["yuyake"]
 sec_col =       mountainfuji["accents"]["kori"]
 third_col =     mountainfuji["accents"]["sakura"]
-main_font =     'FantasqueSansMNerdFont'; #'CozetteVector'
+main_font =     'FantasqueSansMNerdFont';#'MapleMono NF'
 scripts_path =  "/home/bbasic/.config/scripts/"
-dmenu_run =     f" dmenu_run -i -p 'dmenu: ' -sb {main_col} -sf {defs['text']} -nb {defs['term']} -l 7 "
-
+dmenu_run =     f" dmenu_run -i -p 'dmenu: ' -sb {sec_col} -sf {defs['text']} -nb {defs['term']} -l 7 "
 
 
 Decoration={
@@ -84,13 +84,13 @@ groups = [
 
     Group('1',label=" ", matches=[Match(wm_class=["firefox"])]),
     Group('2',label="󰘳 ", matches=[Match(wm_class=["VSCodium"])], layout="spiral"), 
-    Group('3',label=" ", matches=[Match(wm_class=[])]), 
-    Group('4',label=" ", matches=[Match(wm_class=["discord"])]), 
-    Group('5',label="󰊴 ", matches=[Match(wm_class=["Steam","steam",])]), 
-    Group('6',label="󰍷 ", matches=[Match(wm_class=[])]),
-    Group('7',label="󰍷 ", matches=[Match(wm_class=[])]),
-    Group('8',label="󰍷 ", matches=[Match(wm_class=[])]),
-    Group('9',label=" ", matches=[Match(wm_class=["spotify"])]),
+    Group('3',label=" ", matches=[Match(wm_class=[""])], layout="spiral"), 
+    Group('4',label=" ", matches=[Match(wm_class=["spotify"])]),
+    Group('5',label=" ", matches=[Match(wm_class=["discord"])]), 
+    Group('6',label="󰊴 ", matches=[Match(wm_class=["Steam","steam",])]), 
+    Group('7',label="󰍷 ", matches=[Match(wm_class=[""])]),
+    Group('8',label="󰍷 ", matches=[Match(wm_class=[""])]),
+    Group('9',label="󰍷 ", matches=[Match(wm_class=[""])]),
 
     
 ]
@@ -112,13 +112,6 @@ layouts = [
             main_pane='right', clockwise=True,
             new_client_position='left',
         ),
-        #layout.Floating(
-        #    border_width = 1,
-        #    border_focus=defs["coldwhite"],
-        #    border_normal= "#000000",
-        #    max_border_width = 2,
-        #    fullscreen_border_width = 0,
-        #),
         #layout.Columns(),
         #layout.MonadWide(),
         #layout.Matrix(),
@@ -130,6 +123,13 @@ layouts = [
         #layout.TreeTab(),
         #layout.VerticalTile(),
         #layout.Zoomy(),
+        #layout.Floating(
+        #    border_width = 1,
+        #    border_focus=defs["coldwhite"],
+        #    border_normal= "#000000",
+        #    max_border_width = 2,
+        #    fullscreen_border_width = 0,
+        #),
 
 ]
 
@@ -228,33 +228,33 @@ screens = [
         bottom=bar.Bar([ 
                     widget.CurrentLayout(
                         fmt='   󰓼  {}    ',
-                        font=main_font, fontsize=16,    
-                        foreground=sec_col,
+                        font=main_font, fontsize=fn_size,    
+                        foreground=main_col,
                         decorations=[Decoration["RectDec"]["s3"]],
                     ),  
                     widget.Clock(  
                         foreground=defs["coldwhite"], 
                         format="  %A  󱨰  %d/%b  󰦖  %H-%M   ", #old format: %d%m%y 
-                        font=main_font, fontsize=16,
+                        font=main_font, fontsize=fn_size,
                         decorations=[Decoration["RectDec"]["s2"]],
                     ),
                     widget.KeyboardLayout(
                         fmt = '  {}  ',   
                         foreground=main_col,
-                        font=main_font, fontsize=16,
+                        font=main_font, fontsize=fn_size,
                         configured_keyboards=['gb','us','latam'],
                         decorations=[Decoration["RectDec"]["s2"]],
                     ),
                     widget.Spacer(),
                     widget.TextBox(
                         "     ", foreground=defs["coldwhite"],
-                        font=main_font, fontsize=16,
+                        font=main_font, fontsize=fn_size,
                         decorations=[Decoration["RectDec"]["s2"]]
                     ),
                     widget.Volume(  
                         fmt = '  󰟅  {}   ',  
-                        font=main_font, fontsize=16, 
-                        foreground=third_col, 
+                        font=main_font, fontsize=fn_size, 
+                        foreground=main_col, 
                         decorations=[Decoration["RectDec"]["s3"]],
                     ),
                     widget.Battery(
@@ -262,7 +262,7 @@ screens = [
                         discharge_char=' 󰂀  : ', 
                         charge_char=' 󰂀  : > ', unknown_char=' 󰂀  : / ',
                         format='  {char}{percent:2.0%}   ',
-                        font=main_font, fontsize=16,
+                        font=main_font, fontsize=fn_size,
                         decorations=[Decoration["RectDec"]["s2"]],
                     ),  
                     widget.GroupBox(  
@@ -270,17 +270,17 @@ screens = [
                         active=defs["coldwhite"], 
                         highlight_method='text', 
                         borderwidth=0, margin_x=11, padding=0,
-                        font=main_font, fontsize=16, 
+                        font=main_font, fontsize=fn_size, 
                         decorations=[Decoration["RectDec"]["s2"]],
                     ),
                     widget.WidgetBox(
-                        fmt= '    {}    ', foreground=third_col, 
+                        fmt= '    {}    ', foreground=main_col, 
                         text_closed='󰡖', text_open='', 
                         close_button_location='right',
                         widgets=[widget.Systray()], 
-                        font=main_font, fontsize=16, 
+                        font=main_font, fontsize=fn_size, 
                         decorations=[Decoration["RectDec"]["s3"]],
-                    ),
+                    ), 
 
         ],      opacity=1, size=40, background=defs["term"], #border_width=[1,1,1,1], border_color = defs["coldwhite"], #margin=5, background=defs["term"],
         ),      top = bar.Gap(10), left= bar.Gap(10), right= bar.Gap(10),
