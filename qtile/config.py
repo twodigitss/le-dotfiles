@@ -1,47 +1,42 @@
 import os
 from colorsheet import *
-from libqtile import bar, layout, widget, extension
+from libqtile import qtile, bar, layout, widget, extension
 from libqtile.config import Click, Drag, Group, Key, Match, Screen
 from libqtile.config import ScratchPad, DropDown
 from libqtile.lazy import lazy
 from libqtile.utils import guess_terminal
 from qtile_extras import widget
 from qtile_extras.widget.decorations import BorderDecoration, RectDecoration, PowerLineDecoration
+from libqtile.backend.wayland import InputConfig
 
 # -- / NEEDED / --
 #    nerd fonts (not precisely necesary)
-#        vol_bri.sh (found at scripts folder) optional
-#            colorsheet.py (for colors)
+#        scripts found at scripts folder (obligatory)
+#            colorsheet.py for colors (obligatory)
 #                programs: ranger, btop, nitrogen, dmenu (optional)
 
 
 # --- / VARIABLES / ---
-terminal =      "st"; #guess_terminal()
-fn_size =       14; #asdasasdasdasd
-main_col =      mountainfuji["accents"]["yuyake"]
-sec_col =       mountainfuji["accents"]["kori"]
-third_col =     mountainfuji["accents"]["sakura"]
-main_font =     'FantasqueSansMNerdFont';#'MapleMono NF'
-scripts_path =  "/home/bbasic/.config/scripts/"
-dmenu_run =     f" dmenu_run -i -p 'dmenu: ' -sb {sec_col} -sf {defs['text']} -nb {defs['term']} -l 7 "
+terminal =      "st";  #guess_terminal()
+main_col =      mountainfuji["accents"]["sakura"];
+main_font =     'FantasqueSansMNerdFont'; fn_size = 14; 
+scripts_path =  "/home/bbasic/.config/scripts"
+dmenu_run =     f" dmenu_run -i -p 'dmenu: ' -sb {defs['coldwhite']} -sf {defs['text']} -nb {defs['term']} -l 7 "
 
-
-Decoration={
-    "RectDec": {   
-        "s2": RectDecoration( radius=5, filled=True, colour=fujibg["kesseki"], border_width=0, padding=5  ),
-        "s3": RectDecoration( radius=5, filled=True, colour=fujibg["iwa"],     border_width=0, padding=5  ), 
+Decoration={# Instead of declaring the rectdecoration on each bar module, i made a    
+    "RectDec": {#  dictionary of whatever i would ever use here and its easier to read in both 
+        "Sq1": RectDecoration( radius=5, filled=True, colour=fujibg["yoru"],    border_width=0, padding=5,  ),
+        "Sq2": RectDecoration( radius=5, filled=True, colour=fujibg["kesseki"], border_width=0, padding=5,  ),
+        "Sq3": RectDecoration( radius=5, filled=True, colour=fujibg["iwa"],     border_width=0, padding=5,  ), 
+        "Sq4": RectDecoration( radius=5, filled=True, colour=fujibg["tetsu"],   border_width=0, padding=5,  ),
+        "Sq5": RectDecoration( radius=5, filled=True, colour=fujibg["amagumo"], border_width=0, padding=5,  ), 
+        "Sq6": RectDecoration( radius=5, filled=True, colour=fujibg["gin"],     border_width=0, padding=5,  ),
+        "Sq7": RectDecoration( radius=5, filled=True, colour=fujibg["okami"],   border_width=0, padding=5,  ), 
+        "Sq8": RectDecoration( radius=5, filled=True, colour=fujibg["tsuki"],   border_width=0, padding=5,  ),
+        "Sq9": RectDecoration( radius=5, filled=True, colour=fujibg["fuyu"],    border_width=0, padding=5,  
+                               line_colour=defs["coldwhite"],   line_width=1,
+                              ), 
     },
-    "PowerL" : {
-        "rr": PowerLineDecoration( path='rounded_right',override_colour="#",       padding=5  ),
-        "urr":PowerLineDecoration( path='rounded_right',override_next_colour="#",  padding_y=5),
-        "rl": PowerLineDecoration( path='rounded_left', override_colour="#",       padding=5  ),
-        "url":PowerLineDecoration( path='rounded_left', override_next_colour="#",  padding_y=5),
-        },
-    "Border" : {
-        "": BorderDecoration(),
-        "": BorderDecoration(),
-        },
-
 }
 
 # --- / MODKEYS / ---
@@ -49,7 +44,6 @@ MOD  = "mod4";      #WINDOWS KEY
 ALT  = "mod1";      #ALT KEY
 CTRL = "control";   #CONTROL KEY
 SHIFT= "shift";     #SHIFT KEY
-
 
 #autorun commands at start
 autostart=[ 
@@ -225,53 +219,77 @@ extension_defaults = widget_defaults.copy()
 
 screens = [
     Screen(       
-        bottom=bar.Bar([ 
+        bottom=bar.Bar([  
+                    widget.Image(
+                        filename='/home/bbasic/Pictures/pfps/jimbo3-modified.png',
+                        margin= 7,
+                        decorations=[Decoration["RectDec"]["Sq3"]]
+                    ),
                     widget.CurrentLayout(
                         fmt='   󰓼  {}    ',
                         font=main_font, fontsize=fn_size,    
                         foreground=main_col,
-                        decorations=[Decoration["RectDec"]["s3"]],
+                        decorations=[Decoration["RectDec"]["Sq3"]],
                     ),  
-                    widget.Clock(  
+                    widget.Battery(
                         foreground=defs["coldwhite"], 
-                        format="  %A  󱨰  %d/%b  󰦖  %H-%M   ", #old format: %d%m%y 
+                        discharge_char=' 󰂀 : ', 
+                        charge_char=' 󰂀 : > ', unknown_char=' 󰂀 : ! ',
+                        format='  {char}{percent:2.0%}   ',
                         font=main_font, fontsize=fn_size,
-                        decorations=[Decoration["RectDec"]["s2"]],
-                    ),
+                        decorations=[Decoration["RectDec"]["Sq2"]],
+                    ),  
                     widget.KeyboardLayout(
                         fmt = '  {}  ',   
                         foreground=main_col,
                         font=main_font, fontsize=fn_size,
                         configured_keyboards=['gb','us','latam'],
-                        decorations=[Decoration["RectDec"]["s2"]],
+                        decorations=[Decoration["RectDec"]["Sq3"]],
                     ),
+                    
                     widget.Spacer(),
-                    widget.TextBox(
-                        "     ", foreground=defs["coldwhite"],
-                        font=main_font, fontsize=fn_size,
-                        decorations=[Decoration["RectDec"]["s2"]]
-                    ),
-                    widget.Volume(  
-                        fmt = '  󰟅  {}   ',  
-                        font=main_font, fontsize=fn_size, 
-                        foreground=main_col, 
-                        decorations=[Decoration["RectDec"]["s3"]],
-                    ),
-                    widget.Battery(
+                    widget.Clock(  
                         foreground=defs["coldwhite"], 
-                        discharge_char=' 󰂀  : ', 
-                        charge_char=' 󰂀  : > ', unknown_char=' 󰂀  : / ',
-                        format='  {char}{percent:2.0%}   ',
+                        format="   %A  󱨰 %d/%b  󰦖 %H-%M   ", #old format: %d%m%y 
                         font=main_font, fontsize=fn_size,
-                        decorations=[Decoration["RectDec"]["s2"]],
-                    ),  
+                        decorations=[Decoration["RectDec"]["Sq2"]],
+                    ),
                     widget.GroupBox(  
                         this_current_screen_border=main_col,  
                         active=defs["coldwhite"], 
                         highlight_method='text', 
                         borderwidth=0, margin_x=11, padding=0,
                         font=main_font, fontsize=fn_size, 
-                        decorations=[Decoration["RectDec"]["s2"]],
+                        decorations=[Decoration["RectDec"]["Sq2"]],
+                    ),
+                    widget.Spacer(),
+                    
+                    widget.TextBox(
+                        "     ", foreground=main_col,
+                        font=main_font, fontsize=fn_size,
+                        decorations=[Decoration["RectDec"]["Sq2"]]
+                    ),
+                    widget.GenPollCommand(
+                        foreground=defs["coldwhite"], 
+                        font=main_font, fontsize=fn_size, 
+                        fmt = '  {}  ', shell=True,
+                        cmd= f'{scripts_path}/qtileblocks.sh brightness',
+                        update_interval=5,
+                        decorations=[Decoration["RectDec"]["Sq3"]],
+                    ),
+                    widget.GenPollCommand(
+                        foreground=defs["coldwhite"], 
+                        font=main_font, fontsize=fn_size, 
+                        fmt = '  {}  ', shell=True,
+                        cmd= f'{scripts_path}/qtileblocks.sh network',
+                        update_interval=5,
+                        decorations=[Decoration["RectDec"]["Sq3"]],
+                    ),
+                    widget.Volume(  
+                        fmt = '  󰟅  {}   ',  
+                        font=main_font, fontsize=fn_size, 
+                        foreground=main_col, 
+                        decorations=[Decoration["RectDec"]["Sq2"]],
                     ),
                     widget.WidgetBox(
                         fmt= '    {}    ', foreground=main_col, 
@@ -279,11 +297,11 @@ screens = [
                         close_button_location='right',
                         widgets=[widget.Systray()], 
                         font=main_font, fontsize=fn_size, 
-                        decorations=[Decoration["RectDec"]["s3"]],
+                        decorations=[Decoration["RectDec"]["Sq3"]],
                     ), 
 
-        ],      opacity=1, size=40, background=defs["term"], #border_width=[1,1,1,1], border_color = defs["coldwhite"], #margin=5, background=defs["term"],
-        ),      top = bar.Gap(10), left= bar.Gap(10), right= bar.Gap(10),
+        ],      opacity=1, size=42, background=defs["term"], #border_width=[1,1,1,1], border_color = defs["coldwhite"], margin=5, #background=defs["term"],
+        ),      top = bar.Gap(5), left= bar.Gap(10), right= bar.Gap(10),
 
     ),
 
@@ -325,12 +343,32 @@ auto_fullscreen = True
 focus_on_window_activation = "smart"
 reconfigure_screens = True
 
+# WHY THIS DOES NOT WORK FOR ME HELP IM TIRED OF THIS
+# i cannot run qtile on wayland, if you know how to contact me
+if qtile.core.name == "x11":
+    term = guess_terminal()
+elif qtile.core.name == "wayland":
+    term = "st"
+
+# Configure input devices
+try: 
+    wl_input_rules = {
+        "type:keyboard": InputConfig(
+            kb_layout='gb',
+            kb_repeat_rate=60,
+            kb_repeat_delay=350
+        ),
+    }
+except ImportError:
+    wl_input_rules = None
+
+
 # If things like steam games want to auto-minimize themselves when losing
 # focus, should we respect this or not?
 auto_minimize = True
 
 # When using the Wayland backend, this can be used to configure input devices.
-wl_input_rules = None
+#wl_input_rules = None
 
 # XXX: Gasp! We're lying here. In fact, nobody really uses or cares about this
 # string besides java UI toolkits; you can see several discussions on the

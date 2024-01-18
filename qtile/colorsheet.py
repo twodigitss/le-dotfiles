@@ -3,7 +3,7 @@ defs={
     "coldwhite":"#c8ccd6",  "unused":   "#5c5c5c",
     "egg":      "#F0EAD6",  "bg2":      "#151515",
     "term":     "#080808",  "text":     "#010101",
-    "cwhite2":  "#acbae1",  "pink":     "#c0afc0",
+    "cwhite2":  "#acbae1", "matteblack":"#171717",
 }
 
 #https://github.com/mountain-theme/Mountain/blob/master/docs/fuji.org
