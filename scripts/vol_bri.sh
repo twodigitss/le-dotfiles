@@ -19,7 +19,7 @@ function get_brightness {
     	brightnessctl | grep -oP '\d+(?=%)'; }
 
 function get_brightness_icon { 
-	brightness_icon="󱟐  : "; }
+	brightness_icon="󰚵  : "; }
 
 function get_volume_icon {
     volume=$(get_volume)
@@ -27,11 +27,11 @@ function get_volume_icon {
     if [ "$volume" -eq 0 ] || [ "$mute" == "yes" ] ; then
         volume_icon="󰩅  : "
     elif [ "$volume" -lt 30 ]; then
-        volume_icon="󰾆  : "
+        volume_icon="󰟅  : "
     elif [ "$volume" -lt 70 ]; then
-        volume_icon="󰾅  : "
+        volume_icon="󰟅  : "
     else
-        volume_icon="󰓅  : "
+        volume_icon="󰟅  : "
     fi; }
 
 # Displays a volume notification using dunstify
