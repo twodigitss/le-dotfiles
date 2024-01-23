@@ -37,9 +37,9 @@
     		progress_bar_frame_width = 0
 		progress_bar_min_width = 150
 		progress_bar_max_width = 800
-		progress_bar_corner_radius = 3
+		progress_bar_corner_radius = 2
 
-    gap_size = 10 # Size of gap to display between notifications - requires a compositor.
+    gap_size = 0 # Size of gap to display between notifications - requires a compositor.
     frame_width = 1 # Defines width of frame around the notification window. Set to 0 to disable. 
     frame_color = "#c8ccd6"
 
@@ -156,7 +156,7 @@
     	class = Dunst
 
     # Define the corner radius of the notification window
-	corner_radius = 5
+	corner_radius = 3
 
     ignore_dbusclose = false
     # Ignore the dbus closeNotification message.

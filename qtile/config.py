@@ -18,7 +18,8 @@ from libqtile.backend.wayland import InputConfig
 
 # --- / VARIABLES / ---
 terminal =      "st";  #guess_terminal()
-main_col =      mountainfuji["accents"]["sakura"];
+#main_col =      mountainfuji["accents"]["kori"]
+main_col =      nord["Aurora"]["green"]
 main_font =     'FantasqueSansMNerdFont'; fn_size = 14; 
 scripts_path =  "/home/bbasic/.config/scripts"
 dmenu_run =     f" dmenu_run -i -p 'dmenu: ' -sb {defs['coldwhite']} -sf {defs['text']} -nb {defs['term']} -l 7 "
@@ -221,7 +222,7 @@ screens = [
     Screen(       
         bottom=bar.Bar([  
                     widget.Image(
-                        filename='/home/bbasic/Pictures/pfps/jimbo3-modified.png',
+                        filename='/home/bbasic/Pictures/profilepics/jimbo3-modified.png',
                         margin= 7,
                         decorations=[Decoration["RectDec"]["Sq3"]]
                     ),
@@ -230,15 +231,16 @@ screens = [
                         font=main_font, fontsize=fn_size,    
                         foreground=main_col,
                         decorations=[Decoration["RectDec"]["Sq3"]],
-                    ),  
-                    widget.Battery(
+                    ),   
+                    widget.GenPollCommand(
                         foreground=defs["coldwhite"], 
-                        discharge_char=' 󰂀 : ', 
-                        charge_char=' 󰂀 : > ', unknown_char=' 󰂀 : ! ',
-                        format='  {char}{percent:2.0%}   ',
-                        font=main_font, fontsize=fn_size,
+                        font=main_font, fontsize=fn_size, 
+                        fmt = '  {}  ', shell=True,
+                        cmd= f'{scripts_path}/qtileblocks.sh battery',
+                        update_interval=60,
                         decorations=[Decoration["RectDec"]["Sq2"]],
-                    ),  
+                    ),
+  
                     widget.KeyboardLayout(
                         fmt = '  {}  ',   
                         foreground=main_col,
@@ -274,15 +276,15 @@ screens = [
                         font=main_font, fontsize=fn_size, 
                         fmt = '  {}  ', shell=True,
                         cmd= f'{scripts_path}/qtileblocks.sh brightness',
-                        update_interval=5,
-                        decorations=[Decoration["RectDec"]["Sq3"]],
+                        update_interval=10,
+                        decorations=[Decoration["RectDec"]["Sq2"]],
                     ),
                     widget.GenPollCommand(
                         foreground=defs["coldwhite"], 
                         font=main_font, fontsize=fn_size, 
                         fmt = '  {}  ', shell=True,
                         cmd= f'{scripts_path}/qtileblocks.sh network',
-                        update_interval=5,
+                        update_interval=60,
                         decorations=[Decoration["RectDec"]["Sq3"]],
                     ),
                     widget.Volume(  
@@ -300,7 +302,7 @@ screens = [
                         decorations=[Decoration["RectDec"]["Sq3"]],
                     ), 
 
-        ],      opacity=1, size=42, background=defs["term"], #border_width=[1,1,1,1], border_color = defs["coldwhite"], margin=5, #background=defs["term"],
+        ],      opacity=1, size=42, background=defs["term"], #border_width=[1,1,1,1], border_color = fujibg["tetsu"], margin=3, #background=defs["term"],
         ),      top = bar.Gap(5), left= bar.Gap(10), right= bar.Gap(10),
 
     ),

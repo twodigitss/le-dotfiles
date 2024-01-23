@@ -15,10 +15,10 @@ battery() {
 	elif [ "$pwr" -lt 10 ] && [ "$pwr" -ge 0 ];  then icon="󰁺";
 	fi	
 	case "$sts" in
-		"Charging") pwr="+$pwr%";;
+		"Charging") pwr="> $pwr%";;
 		"Discharging") pwr="$pwr%" ;;  *) pwr="?$pwr%" ;;
 	esac;
-	echo -e "$icon $pwr"; }
+	echo -e "$icon : $pwr"; }
 
 volume() {
 	vol="$(pactl list sinks | awk '/Volume:/{print $5; exit}' | tr -d '%')"
