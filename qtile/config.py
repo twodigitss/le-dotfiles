@@ -18,27 +18,61 @@ from libqtile.backend.wayland import InputConfig
 
 # --- / VARIABLES / ---
 terminal =      "st";  #guess_terminal()
-#main_col =      mountainfuji["accents"]["kori"]
-main_col =      nord["Aurora"]["green"]
-main_font =     'FantasqueSansMNerdFont'; fn_size = 14; 
-scripts_path =  "/home/bbasic/.config/scripts"
-dmenu_run =     f" dmenu_run -i -p 'dmenu: ' -sb {defs['coldwhite']} -sf {defs['text']} -nb {defs['term']} -l 7 "
+main_col =      mountainfuji["accents"]["kori"]
+main_font =     'GeistMonoNerdFont'; fn_size = 11
+scripts_path =  f"{os.path.expanduser('~')}/.config/scripts"
+dmenu_run =     f"dmenu_run -i -p 'dmenu: ' -sb {defs['coldwhite']} -sf {defs['text']} -nb {defs['term']} -l 6"
+wallfile =	'~/Pictures/wallpapers/downtown.jpg'; RoundCorner = 8;
+profilepic = 	'~/Pictures/profilepics/jimbo3-modified.png'
 
-Decoration={# Instead of declaring the rectdecoration on each bar module, i made a    
-    "RectDec": {#  dictionary of whatever i would ever use here and its easier to read in both 
-        "Sq1": RectDecoration( radius=5, filled=True, colour=fujibg["yoru"],    border_width=0, padding=5,  ),
-        "Sq2": RectDecoration( radius=5, filled=True, colour=fujibg["kesseki"], border_width=0, padding=5,  ),
-        "Sq3": RectDecoration( radius=5, filled=True, colour=fujibg["iwa"],     border_width=0, padding=5,  ), 
-        "Sq4": RectDecoration( radius=5, filled=True, colour=fujibg["tetsu"],   border_width=0, padding=5,  ),
-        "Sq5": RectDecoration( radius=5, filled=True, colour=fujibg["amagumo"], border_width=0, padding=5,  ), 
-        "Sq6": RectDecoration( radius=5, filled=True, colour=fujibg["gin"],     border_width=0, padding=5,  ),
-        "Sq7": RectDecoration( radius=5, filled=True, colour=fujibg["okami"],   border_width=0, padding=5,  ), 
-        "Sq8": RectDecoration( radius=5, filled=True, colour=fujibg["tsuki"],   border_width=0, padding=5,  ),
-        "Sq9": RectDecoration( radius=5, filled=True, colour=fujibg["fuyu"],    border_width=0, padding=5,  
-                               line_colour=defs["coldwhite"],   line_width=1,
-                              ), 
-    },
-}
+def rectdeco(hexcolor,corner=None): #kesekki iwa
+	return RectDecoration(
+		filled=True, colour=hexcolor,padding=5,
+		radius=corner if corner is not None else 0)		
+
+widget_list=[  
+    widget.Image(
+        filename=profilepic,
+        margin= 7, decorations=[rectdeco(fujibg["tetsu"],RoundCorner)]
+    ),
+    widget.Clock(  
+        foreground=defs["white"], 
+        format="   󱨴 %Y/%b/%d %a   ",        
+	font=main_font, fontsize=fn_size,
+        decorations=[rectdeco(fujibg["kesseki"],RoundCorner)],
+    ),
+    widget.Clock(  
+        foreground=defs["text"], 
+        format="   󱦟 %H-%M   ",        
+	font=main_font, fontsize=fn_size,
+        decorations=[rectdeco(main_col,RoundCorner)],
+    ),
+    widget.GroupBox(  
+        this_current_screen_border=main_col, 
+	active=defs["white"], 
+        highlight_method='text', 
+        borderwidth=0, margin_x=11, padding=0,
+        font=main_font, fontsize=(fn_size+1), 
+        decorations=[rectdeco(fujibg["kesseki"],RoundCorner)],
+    ),
+    widget.Spacer(),
+    widget.GenPollCommand(
+        foreground=defs["white"], 
+        font=main_font, fontsize=fn_size, 
+        fmt = '  {}  ', shell=True,
+        cmd= f'{scripts_path}/qtileblocks.sh battery',
+        update_interval=60,
+        decorations=[rectdeco(fujibg["kesseki"],RoundCorner)],
+    ),
+    widget.WidgetBox(
+        fmt= '   {} ⠀  ', foreground=main_col, 
+        text_closed='󰘸', text_open='󰘹', 
+        close_button_location='right',
+        widgets=[widget.Systray()], 
+        font=main_font, fontsize=14, 
+        decorations=[rectdeco(fujibg["tetsu"],RoundCorner)],
+    ), 
+]
 
 # --- / MODKEYS / ---
 MOD  = "mod4";      #WINDOWS KEY
@@ -49,20 +83,23 @@ SHIFT= "shift";     #SHIFT KEY
 #autorun commands at start
 autostart=[ 
     "setxkbmap -layout gb",
+    #"setxkbmap gb dvorak",
     "xrdb -load ~/.Xresources",  
+    "picom &", 
+    "nm-applet &",
+    "xset r rate 350 60",
 ];  
 for command in autostart: 
     os.system(command)
 
 groups = [
-   
     ScratchPad('0',[
         DropDown(
         "files", f"{terminal} -e ranger", 
         x=0.251,    y=0.18,
         width=0.50, height=0.50,
         on_focus_lost_hide=False),
-        
+
         DropDown(
         "wall", "nitrogen",
         x=0.49,    y=0.58,
@@ -74,7 +111,6 @@ groups = [
         x=0.155,    y=0.11,
         width=0.70, height=0.70,
         on_focus_lost_hide=False),
-
     ]),
 
     Group('1',label=" ", matches=[Match(wm_class=["firefox"])]),
@@ -87,44 +123,25 @@ groups = [
     Group('8',label="󰍷 ", matches=[Match(wm_class=[""])]),
     Group('9',label="󰍷 ", matches=[Match(wm_class=[""])]),
 
-    
 ]
 
 layouts = [
-        layout.Bsp(
-            border_on_single=1,
-            border_width = 1,
-            margin_on_single=5,
-            margin=5,
-            border_focus=defs["egg"],
-            border_normal=defs["unused"],
-            lower_right=False, 
-        ), 
-        layout.Spiral( 
-            border_focus=defs["coldwhite"],
-            border_normal=defs["unused"],
-            border_width = 1, margin=10,
-            main_pane='right', clockwise=True,
-            new_client_position='left',
-        ),
-        #layout.Columns(),
-        #layout.MonadWide(),
-        #layout.Matrix(),
-        #layout.MonadTall(),
-        #layout.Tile(),
-        #layout.RatioTile(),
-        #layout.Slice(),
-        #layout.Stack(),
-        #layout.TreeTab(),
-        #layout.VerticalTile(),
-        #layout.Zoomy(),
-        #layout.Floating(
-        #    border_width = 1,
-        #    border_focus=defs["coldwhite"],
-        #    border_normal= "#000000",
-        #    max_border_width = 2,
-        #    fullscreen_border_width = 0,
-        #),
+    layout.Bsp(
+        border_on_single=1,
+        border_width = 1,
+        margin_on_single=10,
+        margin=10,
+        border_focus=defs["egg"],
+        border_normal=defs["unused"],
+        lower_right=False, 
+    ), 
+    layout.Spiral( 
+        border_focus=defs["coldwhite"],
+        border_normal=defs["unused"],
+        border_width = 1, margin=10,
+        main_pane='right', clockwise=True,
+        new_client_position='left',
+    ),
 
 ]
 
@@ -160,7 +177,6 @@ keys = [
     Key([MOD], "c", lazy.window.kill(), desc="Kill focused window"),
     Key([MOD, CTRL], "r", lazy.reload_config(), desc="Reload the config"),
     Key([MOD, CTRL], "q", lazy.shutdown(), desc="Shutdown Qtile"), 
-
     
     #SCRATCHPADS & GROUPS
     Key([MOD], "Tab", lazy.screen.next_group(), desc="move to next layout"),
@@ -177,6 +193,7 @@ keys = [
     Key([MOD], "s", lazy.spawn("flameshot gui"), desc="screenshot with flameshot"),
     Key([MOD, CTRL], "1", lazy.spawn("setxkbmap -layout gb"), desc="change layout to united kingdom qwerty"),
     Key([MOD, CTRL], "2", lazy.spawn("setxkbmap latam"), desc="change layout to latam qwerty"),
+    Key([MOD, CTRL], "3", lazy.spawn("setxkbmap gb dvorak"), desc="change layout to gb dvorak"),
     
     #EXTRA FUNCTIONALITY 
     Key([MOD], "f", lazy.window.toggle_fullscreen(), desc="toggle fullscreen"), 
@@ -218,96 +235,23 @@ for i in groups:
 widget_defaults = dict( font="sans", fontsize=12, padding=3, )
 extension_defaults = widget_defaults.copy()
 
+
 screens = [
     Screen(       
-        bottom=bar.Bar([  
-                    widget.Image(
-                        filename='/home/bbasic/Pictures/profilepics/jimbo3-modified.png',
-                        margin= 7,
-                        decorations=[Decoration["RectDec"]["Sq3"]]
-                    ),
-                    widget.CurrentLayout(
-                        fmt='   󰓼  {}    ',
-                        font=main_font, fontsize=fn_size,    
-                        foreground=main_col,
-                        decorations=[Decoration["RectDec"]["Sq3"]],
-                    ),   
-                    widget.GenPollCommand(
-                        foreground=defs["coldwhite"], 
-                        font=main_font, fontsize=fn_size, 
-                        fmt = '  {}  ', shell=True,
-                        cmd= f'{scripts_path}/qtileblocks.sh battery',
-                        update_interval=60,
-                        decorations=[Decoration["RectDec"]["Sq2"]],
-                    ),
-  
-                    widget.KeyboardLayout(
-                        fmt = '  {}  ',   
-                        foreground=main_col,
-                        font=main_font, fontsize=fn_size,
-                        configured_keyboards=['gb','us','latam'],
-                        decorations=[Decoration["RectDec"]["Sq3"]],
-                    ),
-                    
-                    widget.Spacer(),
-                    widget.Clock(  
-                        foreground=defs["coldwhite"], 
-                        format="   %A  󱨰 %d/%b  󰦖 %H-%M   ", #old format: %d%m%y 
-                        font=main_font, fontsize=fn_size,
-                        decorations=[Decoration["RectDec"]["Sq2"]],
-                    ),
-                    widget.GroupBox(  
-                        this_current_screen_border=main_col,  
-                        active=defs["coldwhite"], 
-                        highlight_method='text', 
-                        borderwidth=0, margin_x=11, padding=0,
-                        font=main_font, fontsize=fn_size, 
-                        decorations=[Decoration["RectDec"]["Sq2"]],
-                    ),
-                    widget.Spacer(),
-                    
-                    widget.TextBox(
-                        "     ", foreground=main_col,
-                        font=main_font, fontsize=fn_size,
-                        decorations=[Decoration["RectDec"]["Sq2"]]
-                    ),
-                    widget.GenPollCommand(
-                        foreground=defs["coldwhite"], 
-                        font=main_font, fontsize=fn_size, 
-                        fmt = '  {}  ', shell=True,
-                        cmd= f'{scripts_path}/qtileblocks.sh brightness',
-                        update_interval=10,
-                        decorations=[Decoration["RectDec"]["Sq2"]],
-                    ),
-                    widget.GenPollCommand(
-                        foreground=defs["coldwhite"], 
-                        font=main_font, fontsize=fn_size, 
-                        fmt = '  {}  ', shell=True,
-                        cmd= f'{scripts_path}/qtileblocks.sh network',
-                        update_interval=60,
-                        decorations=[Decoration["RectDec"]["Sq3"]],
-                    ),
-                    widget.Volume(  
-                        fmt = '  󰟅  {}   ',  
-                        font=main_font, fontsize=fn_size, 
-                        foreground=main_col, 
-                        decorations=[Decoration["RectDec"]["Sq2"]],
-                    ),
-                    widget.WidgetBox(
-                        fmt= '    {}    ', foreground=main_col, 
-                        text_closed='󰡖', text_open='', 
-                        close_button_location='right',
-                        widgets=[widget.Systray()], 
-                        font=main_font, fontsize=fn_size, 
-                        decorations=[Decoration["RectDec"]["Sq3"]],
-                    ), 
-
-        ],      opacity=1, size=42, background=defs["term"], #border_width=[1,1,1,1], border_color = fujibg["tetsu"], margin=3, #background=defs["term"],
-        ),      top = bar.Gap(5), left= bar.Gap(10), right= bar.Gap(10),
-
+        wallpaper=wallfile,
+        wallpaper_mode='stretch', 
+        bottom=bar.Bar(
+            widget_list,
+            size=35, opacity=1,
+            border_width=[0,0,0,0], #N E S W
+            background=defs["term"], 
+            #border_color = fujibg["tetsu"], 
+            #margin=3, 
+        ),      
+        top = bar.Gap(5), 
+        left= bar.Gap(10), 
+        right= bar.Gap(10),
     ),
-
-
 ]
 
 
@@ -347,10 +291,11 @@ reconfigure_screens = True
 
 # WHY THIS DOES NOT WORK FOR ME HELP IM TIRED OF THIS
 # i cannot run qtile on wayland, if you know how to contact me
+'''
 if qtile.core.name == "x11":
-    term = guess_terminal()
-elif qtile.core.name == "wayland":
     term = "st"
+elif qtile.core.name == "wayland":
+    term = guess_terminal()
 
 # Configure input devices
 try: 
@@ -363,8 +308,7 @@ try:
     }
 except ImportError:
     wl_input_rules = None
-
-
+'''
 # If things like steam games want to auto-minimize themselves when losing
 # focus, should we respect this or not?
 auto_minimize = True

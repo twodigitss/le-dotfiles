@@ -19,7 +19,7 @@ function get_brightness {
     	brightnessctl | grep -oP '\d+(?=%)'; }
 
 function get_brightness_icon { 
-	brightness_icon="󰚵  : "; }
+	brightness_icon="󱟇  : "; }
 
 function get_volume_icon {
     volume=$(get_volume)
@@ -38,14 +38,14 @@ function get_volume_icon {
 function show_volume_notif {
     volume=$(get_mute)
     get_volume_icon
-    dunstify -t 1000 -r 2593 -u normal "$volume_icon $volume%" -h int:value:$volume -h string:hlcolor:$bar_color 
+    dunstify -t 1000 -r 2593 -u normal "$volume_icon $volume" -h int:value:$volume -h string:hlcolor:$bar_color 
 }
 
 # Displays a brightness notification using dunstify
 function show_brightness_notif {
     brightness=$(get_brightness)
     get_brightness_icon
-    dunstify -t 1000 -r 2593 -u normal "$brightness_icon $brightness%" -h int:value:$brightness -h string:hlcolor:$bar_color
+    dunstify -t 1000 -r 2593 -u normal "$brightness_icon $brightness" -h int:value:$brightness -h string:hlcolor:$bar_color
 }
 
 # Main function - Takes user input, "volume_up", "volume_down", "brightness_up", or "brightness_down"
