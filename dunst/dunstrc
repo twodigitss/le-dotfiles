@@ -17,16 +17,16 @@
     scale = 0 ;value 0 if it is autodetected
     
     # Position the notification in the top right corner
-    origin = bottom-left
+    origin = top-right
 	# Alignment of message text: "left", "center" and "right".
-    	alignment = left
+    	alignment = right
 	    # Vertical alignment of message text and icon: "top", "center" and "bottom".
 	    vertical_alignment = center
 
 
     # Offset from the orign
     	#offset = 60x60	# Axis: X x Y
-    	offset = 40x70	# Axis: X x Y
+    	offset = 40x40	# Axis: X x Y
  
     # Maximum number of notification (0 means no limit)
 	notification_limit = 0 
@@ -37,10 +37,10 @@
     		progress_bar_frame_width = 0
 		progress_bar_min_width = 150
 		progress_bar_max_width = 800
-		progress_bar_corner_radius = 2
+		progress_bar_corner_radius = 5
 
     gap_size = 0 # Size of gap to display between notifications - requires a compositor.
-    frame_width = 1 # Defines width of frame around the notification window. Set to 0 to disable. 
+    frame_width = 0 # Defines width of frame around the notification window. Set to 0 to disable. 
     frame_color = "#c8ccd6"
 
     # The transparency of the window.  Range: [0; 100]. 
@@ -65,7 +65,8 @@
 
 # /-----/ TEXT CONFIGURATION /-----/
 
-    font = sans 10 #default
+    #font = sans 10 #default
+    font = CousineerdFont 10 #default
 	line_height = 2 # The spacing between lines.
 
     markup = full
@@ -120,7 +121,7 @@
     enable_recursive_icon_lookup = false
 
     icon_theme = "notifications","Adwaita"
-    icon_position = left # Align icons left/right/top/off
+    icon_position = right #Align icons left/right/top/off
 	    min_icon_size = 25
 	    	max_icon_size = 42
 
@@ -156,7 +157,7 @@
     	class = Dunst
 
     # Define the corner radius of the notification window
-	corner_radius = 3
+	corner_radius = 10
 
     ignore_dbusclose = false
     # Ignore the dbus closeNotification message.
@@ -226,7 +227,7 @@
 
 [urgency_normal]
     background = "#080808"
-    foreground = "#a4a4a4"
+    foreground = "#ececec"
     timeout = 5
     # Icon for notifications with normal urgency, uncomment to enable
     #icon = /path/to/icon
