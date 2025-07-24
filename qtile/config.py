@@ -114,6 +114,9 @@ widget_list=[
         font=main_font, fontsize=(fn_size), 
         visible_groups=["1","2","3","4","5"],
     ),
+    widget.Systray(
+        icon_size = 15,
+    ),
     widget.Prompt(
         font=main_font, 
         fontsize=fn_size,
@@ -125,7 +128,7 @@ widget_list=[
         font=main_font, fontsize=fn_size, 
         fmt = '  {}  ', shell=True,
         cmd= "upower -i /org/freedesktop/UPower/devices/battery_BAT0 | awk '/state/ {s=$2} /percentage/ {p=$2} END {print s, p}'",
-        update_interval=60,
+        update_interval = 30,
     ),
     widget.Clock(  
         foreground=theme.textCol, 
@@ -301,11 +304,11 @@ keys = [
     
     #EXTRA FUNCTIONALITY 
     Key([MOD], "f", lazy.window.toggle_fullscreen(), desc="toggle fullscreen"), 
-    Key([],"XF86AudioRaiseVolume",  lazy.spawn(f"{scripts_path}/vol_bri.sh volume_up"), desc="VOLUME UP"),
-    Key([],"XF86AudioLowerVolume",  lazy.spawn(f"{scripts_path}/vol_bri.sh volume_down"), desc="VOLUME DOWN"),
-    Key([],"XF86AudioMute",         lazy.spawn(f"{scripts_path}/vol_bri.sh volume_mute"), desc="VOLUME MUTE"),
-    Key([],"XF86MonBrightnessUp",   lazy.spawn(f"{scripts_path}/vol_bri.sh brightness_up"), desc="BRIGHTNESS UP"),
-    Key([],"XF86MonBrightnessDown", lazy.spawn(f"{scripts_path}/vol_bri.sh brightness_down"), desc="BRIGHTNESS DOWN"),
+    Key([],"XF86AudioRaiseVolume",  lazy.spawn("pactl set-sink-volume @DEFAULT_SINK@ +5%"), desc="VOLUME UP"),
+    Key([],"XF86AudioLowerVolume",  lazy.spawn("pactl set-sink-volume @DEFAULT_SINK@ -5%"), desc="VOLUME DOWN"),
+    Key([],"XF86AudioMute",         lazy.spawn("pactl set-sink-mute @DEFAULT_SINK@ toggle"), desc="VOLUME MUTE"),
+    Key([],"XF86MonBrightnessUp",   lazy.spawn("brightnessctl set 5%+"), desc="BRIGHTNESS UP"),
+    Key([],"XF86MonBrightnessDown", lazy.spawn("brightnessctl set 5%-"), desc="BRIGHTNESS DOWN"),
     Key([],"XF86AudioPlay", lazy.spawn("playerctl play-pause"), desc="Player"),
     Key([],"XF86AudioNext", lazy.spawn("playerctl next"), desc="Player"),
     Key([],"XF86AudioPrev", lazy.spawn("playerctl previous"), desc="Player"),
