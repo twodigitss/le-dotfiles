@@ -379,7 +379,7 @@ autostart=[
 wl_input_rules = {
     # "type:pointer": InputConfig(tap=True),
     # Activa tap-to-click para tu touchpad (se detecta como un pointer)
-    "type:pointer": InputConfig(
+    "1267:12447:ELAN1200:00 04F3:309F Touchpad": InputConfig(
         tap=True,
         click_method="clickfinger",         # o "button_areas" si prefieres
         natural_scroll=True                  # opcional: scroll natural
