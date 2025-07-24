@@ -8,6 +8,7 @@ from libqtile.utils import guess_terminal
 from libqtile.lazy import lazy
 from qtile_extras import widget
 from qtile_extras.widget.decorations import RectDecoration; #PowerLineDecoration, BorderDecoration
+from libqtile.backend.wayland import InputConfig
 
 # -- / NEEDED / --
 #    nerd fonts (not precisely neccesary)
@@ -22,7 +23,7 @@ from qtile_extras.widget.decorations import RectDecoration; #PowerLineDecoration
 #from qtile_extras.widget.decorations import RectDecoration; #PowerLineDecoration, BorderDecoration
 #from random import choice
 
-wallDir = "/home/bbasic/Pictures/wallpapers/"
+wallDir = "/home/gwyne/Pictures/wallpapers/"
 
 # --- / SOME FUNCTIONS THAT HELPS MY LAZYNESS / ---
 def RD(hex,corner=None) -> object: 
@@ -81,13 +82,13 @@ class Theme:
 #from libqtile.utils import guess_terminal
 
 # --- / VARIABLES / ---
-theme =	        Theme("dark")
-terminal =      guess_terminal(); radius = 8
-main_font =     "FiraCodeNerdFont"; fn_size = 12
-imagesPath =    "/home/bbasic/.config/qtile/appImages"
-scripts_path =  "/home/bbasic/.config/scripts"
-wallfile =		f"{wallDir}/prometheus_upscaled2.png";#randomWall(); 
-dmenu_run =     f"dmenu_run -i -p 'exec: ' -sb #c8ccd6 -sf #121212 -nb #080808 -l 4"
+radius = 8 ; 
+fn_size = 10
+theme =	Theme("dark")
+terminal = "warp-terminal" or guess_terminal(); 
+main_font = "MapleMono"; 
+scripts_path = "/home/gwyne/.config/scripts"
+wallfile = randomWall(); #f"{wallDir}/prometheus_upscaled2.png";
 
 # --- / MODKEYS / ---
 MOD  = "mod4";      #WINDOWS KEY
@@ -104,85 +105,39 @@ SHIFT= "shift";     #SHIFT KEY
 #from qtile_extras import widget
 
 # --- / WIDGETS / ---
-widget_list=[  
-    widget.Image(
-        filename = f"{imagesPath}/wife.png",
-        margin= 7, 
-        decorations=[RD('#000000ae',5)]
-    ),
+widget_list=[
     widget.GroupBox(  
         this_current_screen_border=theme.main, 
 	    active=theme.textCol, inactive='#818181',
         highlight_method='text', 
         borderwidth=0, margin_x=11, padding=0,
         font=main_font, fontsize=(fn_size), 
-        visible_groups=["1","2","3","4","5","6"],
-        decorations=[RD(theme.bg1,radius)]
+        visible_groups=["1","2","3","4","5"],
     ),
-    
-    widget.GenPollCommand(
-        foreground=theme.textCol, 
-        font=main_font, fontsize=fn_size, 
-        fmt = '  {}  ', shell=True,
-        cmd= f'{scripts_path}/qtileblocks.py network',
-        update_interval=60,
-        decorations=[RD(theme.bg2,radius)],
-        mouse_callbacks={"Button1": lazy.spawn(f"{scripts_path}/wifi.sh")} 
+    widget.Prompt(
+        font=main_font, 
+        fontsize=fn_size,
     ),
+    widget.Spacer(),
     #BATTERY
     widget.GenPollCommand(
         foreground=theme.textCol, 
         font=main_font, fontsize=fn_size, 
         fmt = '  {}  ', shell=True,
-        cmd= f'{scripts_path}/qtileblocks.py battery',
+        cmd= "upower -i /org/freedesktop/UPower/devices/battery_BAT0 | awk '/state/ {s=$2} /percentage/ {p=$2} END {print s, p}'",
         update_interval=60,
-        decorations=[RD(theme.bg1,radius)]
     ),
-    widget.Spacer(),
-    widget.WidgetBox(
-        fmt= '  {}⠀  ', foreground=theme.textColAlt, 
-        text_closed='󰘳', text_open='󰘳', 
-        close_button_location='right',
-        widgets=[
-	   		widget.Systray(),
-            widget.Image(
-                filename = f"{imagesPath}/vscode.png",
-                margin= 3, 
-                decorations=[RD(theme.bgAlpha,10)],
-                mouse_callbacks={"Button1": lazy.spawn("vscodium")},
-            ),
-            widget.Image(
-                filename = f"{imagesPath}/steam.png",
-                margin= 3, 
-                decorations=[RD(theme.bgAlpha,10)],
-                mouse_callbacks={"Button1": lazy.spawn("steam")},
-            ),
-            widget.Image(
-                filename = f"{imagesPath}/filemanager.png",
-                margin= 3, 
-                decorations=[RD(theme.bgAlpha,10)],
-                mouse_callbacks={"Button1": lazy.spawn("pcmanfm")},
-            ),
-            widget.Image(
-                filename = f"{imagesPath}/browser.png",
-                margin= 3, 
-                decorations=[RD(theme.bgAlpha,7)],
-                mouse_callbacks={"Button1": lazy.spawn("brave")},
-            ),
-		], 
-        font=main_font, fontsize=15, 
-        decorations=[RD(theme.main,radius)],
-    ), 
     widget.Clock(  
         foreground=theme.textCol, 
         format="   %A  󱨰 %d/%b  󰦖 %H-%M   ",
         font=main_font, fontsize=fn_size,
-        decorations=[RD(theme.bg1,radius)]
     ),
-    widget.TextBox(
-        "  ⠀⠀", foreground=theme.main,
+    widget.QuickExit(
+        foreground=theme.textCol, 
+        default_text = "shutdown",
         font=main_font, fontsize=fn_size,
-        decorations=[RD(theme.bg2,radius)]
+        countdown_format='  [{}]  ',
+        fmt = "{}   ",
     ),
 ]
 
@@ -215,15 +170,15 @@ groups = [
         on_focus_lost_hide=False),
     ]),
 
-    Group('1',label=" ", matches=[Match(wm_class="firefox")], layout="spiral"),
-    Group('2',label="󰘳 ", matches=[Match(wm_class="VSCodium")], layout="spiral"), 
-    Group('3',label=" ", matches=[Match(wm_class="")], layout="spiral"), 
-    Group('4',label=" ", matches=[Match(wm_class="spotify")]),
-    Group('5',label=" ", matches=[Match(wm_class="discord")]), 
-    Group('6',label="󰊴 ", matches=[Match(wm_class="steam")]), 
-    Group('7',label="󰍷 ", matches=[Match(wm_class="")]),
-    Group('8',label="󰍷 ", matches=[Match(wm_class="")]),
-    Group('9',label="󰍷 ", matches=[Match(wm_class="")]),
+    Group('1', matches=[Match(wm_class="firefox")], layout="spiral"),
+    Group('2', matches=[Match(wm_class="VSCodium")], layout="spiral"), 
+    Group('3', matches=[Match(wm_class="")], layout="spiral"), 
+    Group('4', matches=[Match(wm_class="spotify")]),
+    Group('5', matches=[Match(wm_class="discord")]), 
+    Group('6', matches=[Match(wm_class="steam")]), 
+    Group('7', matches=[Match(wm_class="")]),
+    Group('8', matches=[Match(wm_class="")]),
+    Group('9', matches=[Match(wm_class="")]),
 
 ]
 
@@ -300,7 +255,7 @@ keys = [
         Key([MOD], "l", lazy.layout.right(), desc="Move focus to right"),
         Key([MOD], "j", lazy.layout.down(), desc="Move focus down"),
         Key([MOD], "k", lazy.layout.up(), desc="Move focus up"),
-        Key([MOD], "space", lazy.layout.next(), desc="Move window focus to other window"),
+        # Key([MOD], "space", lazy.layout.next(), desc="Move window focus to other window"),
     # Move windows between left/right columns or move up/down in current stack.
     # Moving out of range in Columns layout will create new column.
         Key([MOD, SHIFT], "h", lazy.layout.shuffle_left(), desc="Move window to the left"),
@@ -314,7 +269,7 @@ keys = [
         Key([MOD, CTRL], "j", lazy.layout.grow_down(), desc="Grow window down"),
         Key([MOD, CTRL], "k", lazy.layout.grow_up(), desc="Grow window up"),
         Key([MOD, CTRL], "n", lazy.layout.normalize(), desc="Reset all window sizes"),
-        Key([MOD],"Return", lazy.layout.toggle_split(), desc="Toggle split/unsplit sides of stack",),
+        # Key([MOD],"Return", lazy.layout.toggle_split(), desc="Toggle split/unsplit sides of stack",),
     # Toggle between split and unsplit sides of stack.
     # Split = all windows displayed
     # Unsplit = 1 window displayed, like Max layout, but still with
@@ -322,6 +277,7 @@ keys = [
  
     Key([MOD], "return", lazy.spawn(terminal), desc="Launch terminal"),
     Key([MOD], "c", lazy.window.kill(), desc="Kill focused window"),
+    Key([MOD], "d", lazy.spawncmd(), desc="Spawn a command using a prompt widget"),
     Key([MOD, CTRL], "r", lazy.reload_config(), desc="Reload the config"),
     Key([MOD, CTRL], "q", lazy.shutdown(), desc="Shutdown Qtile"), 
     
@@ -329,19 +285,19 @@ keys = [
     Key([MOD], "Tab", lazy.screen.next_group(), desc="move to next layout"),
     Key([ALT], "Tab", lazy.screen.prev_group(), desc="move to previous layout"),
     Key([MOD, CTRL], "Tab", lazy.next_layout(), desc="Toggle between layouts"),
-    Key([MOD], "r", lazy.group['0'].dropdown_toggle('files')), 
-    Key([MOD], "w", lazy.group['0'].dropdown_toggle('wall')), 
-    Key([MOD], "b", lazy.group['0'].dropdown_toggle('btop')), 
+    # Key([MOD], "r", lazy.group['0'].dropdown_toggle('files')), 
+    # Key([MOD], "w", lazy.group['0'].dropdown_toggle('wall')), 
+    # Key([MOD], "b", lazy.group['0'].dropdown_toggle('btop')), 
     
     #SPAWN STUFFFF
-    Key([MOD], "x", lazy.spawn(f"{scripts_path}/turnoff.sh"), desc="close up menu"),
-    Key([MOD], "z", lazy.spawn(f"{scripts_path}/wifi.sh"), desc="wifi connection menu"),
-    Key([MOD], "d", lazy.spawn(dmenu_run), desc="Execute programs with Dmenu"),
+    # Key([MOD], "x", lazy.spawn(f"{scripts_path}/turnoff.sh"), desc="close up menu"),
+    # Key([MOD], "z", lazy.spawn(f"{scripts_path}/wifi.sh"), desc="wifi connection menu"),
+    # Key([MOD], "d", lazy.spawn(dmenu_run), desc="Execute programs with Dmenu"),
     #Key([MOD], "d", lazy.spawn("ulauncher"), desc="Execute programs with ULauncher"),
-    Key([MOD], "p", lazy.spawn(f"{scripts_path}/screenshots.sh"), desc="does screenshots"),
-    Key([MOD], "s", lazy.spawn("flameshot gui"), desc="screenshot with flameshot"),
-    Key([MOD, CTRL], "1", lazy.spawn("setxkbmap -layout gb"), desc="change layout to united kingdom qwerty"),
-    Key([MOD, CTRL], "2", lazy.spawn("setxkbmap gb dvorak"), desc="change layout to gb dvorak"),
+    # Key([MOD], "p", lazy.spawn(f"{scripts_path}/screenshots.sh"), desc="does screenshots"),
+    # Key([MOD], "s", lazy.spawn("flameshot gui"), desc="screenshot with flameshot"),
+    # Key([MOD, CTRL], "1", lazy.spawn("setxkbmap -layout gb"), desc="change layout to united kingdom qwerty"),
+    # Key([MOD, CTRL], "2", lazy.spawn("setxkbmap gb dvorak"), desc="change layout to gb dvorak"),
     
     #EXTRA FUNCTIONALITY 
     Key([MOD], "f", lazy.window.toggle_fullscreen(), desc="toggle fullscreen"), 
@@ -381,11 +337,11 @@ for i in groups:
 #from libqtile.config import Screen
 #from libqtile import bar
 
-barPos = "bottom"
+barPos = "top"
 
 MyBar = bar.Bar(
     widget_list,
-    background = '#00000040',
+    # background = '#00000040',
     size = 30 if barPos=='top' else 33, 
     opacity = 1,
     #margin=[5,5,5,5],
@@ -411,14 +367,32 @@ screens = [
 
 #autorun commands at start
 autostart=[ 
-    "setxkbmap -layout gb",
-    #"nm-applet &",
+    # "setxkbmap -layout gb",
+    "nm-applet &",
     "picom &",
     "xset r rate 350 60",
 ];  
 
-for command in autostart: 
-    system(command)
+# for command in autostart: 
+#     system(command)
+
+wl_input_rules = {
+    # "type:pointer": InputConfig(tap=True),
+    # Activa tap-to-click para tu touchpad (se detecta como un pointer)
+    "type:pointer": InputConfig(
+        tap=True,
+        click_method="clickfinger",         # o "button_areas" si prefieres
+        natural_scroll=True                  # opcional: scroll natural
+    ),
+    # Ajusta la repetición del teclado
+    "type:keyboard": InputConfig(
+        kb_repeat_delay=350,                # delay en ms antes de repetir
+        kb_repeat_rate=60                   # repeticiones por segundo
+    ),
+    # "1267:12377:ELAN1300:00 04F3:3059 Touchpad": InputConfig(left_handed=True),
+    # "*": InputConfig(tap: True, left_handed=True, pointer_accel=True),
+    # "type:keyboard": InputConfig(kb_options="ctrl:nocaps,compose:ralt"),
+}
 
 widget_defaults = dict( font="sans", fontsize=12, padding=3, )
 extension_defaults = widget_defaults.copy()
